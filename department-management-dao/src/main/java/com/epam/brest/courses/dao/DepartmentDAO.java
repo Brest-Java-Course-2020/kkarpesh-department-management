@@ -6,7 +6,17 @@ import java.util.List;
 
 public interface DepartmentDAO {
 
-    List<Department> getDepartment();
+    List<Department> getDepartments();
+
+    Department getDepartmentById(Integer departmentId);
+
+    Department addDepartment(Department department);
+
+    void updateDepartment(Department department);
+
+    void deleteDepartment(Integer departmentId);
+
+
 
 
 }
