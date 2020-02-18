@@ -2,6 +2,7 @@ package com.epam.brest.courses.dao;
 
 import com.epam.brest.courses.model.Department;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 
 import java.sql.ResultSet;
@@ -18,13 +19,14 @@ public class DepartmentJdbcDAOImpl implements DepartmentDAO {
 
     @Override
     public List<Department> getDepartments() {
-        List <Department> departments = namedParameterJdbcTemplate.query("SELECT d.departmentID, d.departmentName FROM department d ORDER BY d.departmentName", new DepartmentRowMapper());
+        List<Department> departments = namedParameterJdbcTemplate.query("SELECT d.departmentID, d.departmentName FROM department d ORDER BY d.departmentName", new DepartmentRowMapper());
         return departments;
     }
 
     @Override
     public Department getDepartmentById(Integer departmentId) {
-        return null;
+        Department department = namedParameterJdbcTemplate.queryForObject("SELECT d.departmentID, d.departmentName FROM department d WHERE departmentId = :departmentId", new MapSqlParameterSource("departmentId", departmentId), new DepartmentRowMapper());
+        return department;
     }
 
     @Override
@@ -47,8 +49,8 @@ public class DepartmentJdbcDAOImpl implements DepartmentDAO {
         @Override
         public Department mapRow(ResultSet resultSet, int i) throws SQLException {
             Department department = new Department();
-            department.setDepartmentId(resultSet.getInt("DEPARTMENT_ID"));
-            department.setDepartmentName(resultSet.getString("DEPARTMENT_NAME"));
+            department.setDepartmentId(resultSet.getInt("departmentId"));
+            department.setDepartmentName(resultSet.getString("departmentName"));
             return department;
         }
     }
