@@ -27,7 +27,7 @@ public class DepartmentJdbcDAOImpl implements DepartmentDAO {
 
     @Override
     public List<Department> getDepartments() {
-        LOGGER.trace("Get all departments");
+        LOGGER.debug("Get all departments");
         String sql = "SELECT d.departmentID, d.departmentName FROM department d ORDER BY d.departmentName";
         List<Department> departments = namedParameterJdbcTemplate.query(sql, new DepartmentRowMapper());
         return departments;
@@ -35,6 +35,7 @@ public class DepartmentJdbcDAOImpl implements DepartmentDAO {
 
     @Override
     public Department getDepartmentById(Integer departmentId) {
+        LOGGER.debug("Get departments by ID {}", departmentId);
         String sql = "SELECT d.departmentID, d.departmentName FROM department d WHERE departmentId = :departmentId";
         Department department = namedParameterJdbcTemplate.queryForObject(sql, new MapSqlParameterSource("departmentId", departmentId), new DepartmentRowMapper());
         return department;
