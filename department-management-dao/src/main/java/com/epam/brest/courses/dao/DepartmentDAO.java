@@ -10,7 +10,7 @@ public interface DepartmentDAO {
 
     Department getDepartmentById(Integer departmentId);
 
-    Department addDepartment(Department department);
+    int addDepartment(Department department);
 
     void updateDepartment(Department department);
 
