@@ -3,6 +3,7 @@ package com.epam.brest.courses.dao;
 import com.epam.brest.courses.model.Department;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
@@ -20,7 +21,9 @@ public class DepartmentJdbcDAOImpl implements DepartmentDAO {
 
     private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
-    private final String SELECT_ALL_DEPARTMENTS = "SELECT d.departmentID, d.departmentName FROM department d ORDER BY d.departmentName";
+    @Value("${department.select}")
+    private String selectSql;
+
     private final String SELECT_DEPARTMENT = "SELECT d.departmentID, d.departmentName FROM department d WHERE departmentId = :departmentId";
     private final String ADD_DEPARTMENT = "INSERT INTO department(departmentName) VALUES (:departmentName)";
     private final String UPDATE_DEPARTMENT = "UPDATE department SET departmentName= :=departmentName WHERE departmentId = :departmentId";
@@ -33,7 +36,7 @@ public class DepartmentJdbcDAOImpl implements DepartmentDAO {
     @Override
     public List<Department> getDepartments() {
         LOGGER.debug("Get all departments");
-        List<Department> departments = namedParameterJdbcTemplate.query(SELECT_ALL_DEPARTMENTS, new DepartmentRowMapper());
+        List<Department> departments = namedParameterJdbcTemplate.query(selectSql, new DepartmentRowMapper());
         return departments;
     }
 
