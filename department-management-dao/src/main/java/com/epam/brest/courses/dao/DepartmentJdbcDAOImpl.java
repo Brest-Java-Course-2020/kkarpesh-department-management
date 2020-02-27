@@ -21,13 +21,20 @@ public class DepartmentJdbcDAOImpl implements DepartmentDAO {
 
     private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
-    @Value("${department.select}")
-    private String selectSql;
+    @Value("${department.selectAll}")
+    private String selectAll;
 
-    private final String SELECT_DEPARTMENT = "SELECT d.departmentID, d.departmentName FROM department d WHERE departmentId = :departmentId";
-    private final String ADD_DEPARTMENT = "INSERT INTO department(departmentName) VALUES (:departmentName)";
-    private final String UPDATE_DEPARTMENT = "UPDATE department SET departmentName= :=departmentName WHERE departmentId = :departmentId";
-    private final String DELETE_DEPARTMENT = "DELETE FROM department WHERE departmentId = : departmentId";
+    @Value("${department.selectById}")
+    private String selectById;
+
+    @Value("${department.insert}")
+    private String insert;
+
+    @Value("${department.update}")
+    private String update;
+
+    @Value("${department.delete}")
+    private String delete;
 
     public DepartmentJdbcDAOImpl(NamedParameterJdbcTemplate namedParameterJdbcTemplate) {
         this.namedParameterJdbcTemplate = namedParameterJdbcTemplate;
@@ -36,14 +43,14 @@ public class DepartmentJdbcDAOImpl implements DepartmentDAO {
     @Override
     public List<Department> getDepartments() {
         LOGGER.debug("Get all departments");
-        List<Department> departments = namedParameterJdbcTemplate.query(selectSql, new DepartmentRowMapper());
+        List<Department> departments = namedParameterJdbcTemplate.query(selectAll, new DepartmentRowMapper());
         return departments;
     }
 
     @Override
     public Department getDepartmentById(Integer departmentId) {
         LOGGER.debug("Get departments by ID {}", departmentId);
-        Department department = namedParameterJdbcTemplate.queryForObject(SELECT_DEPARTMENT,
+        Department department = namedParameterJdbcTemplate.queryForObject(selectById,
                 new MapSqlParameterSource("departmentId", departmentId),
                 new DepartmentRowMapper());
         return department;
@@ -53,7 +60,7 @@ public class DepartmentJdbcDAOImpl implements DepartmentDAO {
     public int addDepartment(Department department) {
         Map<String, Object> paramMap = new HashMap<String, Object>();
         paramMap.put("departmentName", department.getDepartmentName());
-        return namedParameterJdbcTemplate.update(ADD_DEPARTMENT, paramMap);
+        return namedParameterJdbcTemplate.update(insert, paramMap);
     }
 
     @Override
@@ -61,7 +68,7 @@ public class DepartmentJdbcDAOImpl implements DepartmentDAO {
         SqlParameterSource namedPArameters = new MapSqlParameterSource()
                 .addValue("departmentName", department.getDepartmentName())
                 .addValue("departmentId", department.getDepartmentId());
-        int status = namedParameterJdbcTemplate.update(UPDATE_DEPARTMENT, namedPArameters);
+        int status = namedParameterJdbcTemplate.update(update, namedPArameters);
         if (status != 0) {
             LOGGER.debug("Department data updated for ID {}", department.getDepartmentId());
         } else {
@@ -72,7 +79,7 @@ public class DepartmentJdbcDAOImpl implements DepartmentDAO {
     @Override
     public void deleteDepartment(Integer departmentId) {
         SqlParameterSource namedParameters = new MapSqlParameterSource("departmentId", departmentId);
-        int status = namedParameterJdbcTemplate.update(DELETE_DEPARTMENT, namedParameters);
+        int status = namedParameterJdbcTemplate.update(delete, namedParameters);
         if (status != 0) {
             LOGGER.debug("Department data deleted for ID {}", departmentId);
         } else {

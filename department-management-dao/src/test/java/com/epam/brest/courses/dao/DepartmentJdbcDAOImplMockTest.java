@@ -15,7 +15,6 @@ import org.springframework.test.util.ReflectionTestUtils;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -48,7 +47,7 @@ public class DepartmentJdbcDAOImplMockTest {
         Department department = new Department();
         ResultSet rs = mock(ResultSet.class);
         String sql = "select";
-        ReflectionTestUtils.setField(departmentDAO, "selectSql", sql);
+        ReflectionTestUtils.setField(departmentDAO, "selectAll", sql);
 
         when(namedParameterJdbcTemplate.query(anyString(), any(RowMapper.class))).thenReturn(Collections.singletonList(department));
         when(rs.getInt(anyString())).thenReturn(5);
