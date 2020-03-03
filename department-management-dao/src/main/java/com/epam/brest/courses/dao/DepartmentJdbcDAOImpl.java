@@ -4,31 +4,36 @@ import com.epam.brest.courses.model.Department;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.dao.support.DataAccessUtils;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+
+import static com.epam.brest.courses.constants.DepartmentConstants.*;
 
 
 public class DepartmentJdbcDAOImpl implements DepartmentDAO {
+
     private static final Logger LOGGER = LoggerFactory.getLogger(DepartmentJdbcDAOImpl.class);
 
-    private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
+    @Value("${department.findAll}")
+    private String findAll;
 
-    @Value("${department.selectAll}")
-    private String selectAll;
+    @Value("${department.findById}")
+    private String findById;
 
-    @Value("${department.selectById}")
-    private String selectById;
-
-    @Value("${department.insert}")
-    private String insert;
+    @Value("${department.create}")
+    private String create;
 
     @Value("${department.update}")
     private String update;
@@ -36,55 +41,59 @@ public class DepartmentJdbcDAOImpl implements DepartmentDAO {
     @Value("${department.delete}")
     private String delete;
 
+    private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
+
+    private final DepartmentRowMapper departmentRowMapper = new DepartmentRowMapper();
+
     public DepartmentJdbcDAOImpl(NamedParameterJdbcTemplate namedParameterJdbcTemplate) {
         this.namedParameterJdbcTemplate = namedParameterJdbcTemplate;
     }
     
     @Override
-    public List<Department> getDepartments() {
-        LOGGER.debug("Get all departments");
-        List<Department> departments = namedParameterJdbcTemplate.query(selectAll, new DepartmentRowMapper());
+    public List<Department> findAll() {
+        LOGGER.debug("Find all departments");
+
+        List<Department> departments = namedParameterJdbcTemplate.query(findAll, departmentRowMapper);
         return departments;
     }
 
     @Override
-    public Department getDepartmentById(Integer departmentId) {
-        LOGGER.debug("Get departments by ID {}", departmentId);
-        Department department = namedParameterJdbcTemplate.queryForObject(selectById,
-                new MapSqlParameterSource("departmentId", departmentId),
-                new DepartmentRowMapper());
-        return department;
+    public Optional<Department> findById(Integer departmentId) {
+        LOGGER.debug("Find department by ID {}", departmentId);
+
+        SqlParameterSource namedParameters = new MapSqlParameterSource(DEPARTMENT_ID, departmentId);
+        List<Department> results = namedParameterJdbcTemplate.query(findById, namedParameters, departmentRowMapper);
+        return Optional.ofNullable(DataAccessUtils.uniqueResult(results));
     }
 
     @Override
-    public int addDepartment(Department department) {
-        Map<String, Object> paramMap = new HashMap<String, Object>();
-        paramMap.put("departmentName", department.getDepartmentName());
-        return namedParameterJdbcTemplate.update(insert, paramMap);
+    public int create(Department department) {
+        LOGGER.debug("create(department:{})", department);
+
+        MapSqlParameterSource params = new MapSqlParameterSource();
+        params.addValue(DEPARTMENT_NAME, department.getDepartmentName());
+        KeyHolder keyHolder = new GeneratedKeyHolder();
+        namedParameterJdbcTemplate.update(create, params, keyHolder);
+        return keyHolder.getKey().intValue();
     }
 
     @Override
-    public void updateDepartment(Department department) {
-        SqlParameterSource namedPArameters = new MapSqlParameterSource()
-                .addValue("departmentName", department.getDepartmentName())
-                .addValue("departmentId", department.getDepartmentId());
-        int status = namedParameterJdbcTemplate.update(update, namedPArameters);
-        if (status != 0) {
-            LOGGER.debug("Department data updated for ID {}", department.getDepartmentId());
-        } else {
-            LOGGER.debug("No department found with ID {}", department.getDepartmentId());
-        }
+    public int update(Department department) {
+        LOGGER.debug("update(department:{})", department);
+
+        Map<String, Object> params = new HashMap<>();
+        params.put(DEPARTMENT_ID, department.getDepartmentId());
+        params.put(DEPARTMENT_NAME, department.getDepartmentName());
+        return namedParameterJdbcTemplate.update(update, params);
     }
 
     @Override
-    public void deleteDepartment(Integer departmentId) {
-        SqlParameterSource namedParameters = new MapSqlParameterSource("departmentId", departmentId);
-        int status = namedParameterJdbcTemplate.update(delete, namedParameters);
-        if (status != 0) {
-            LOGGER.debug("Department data deleted for ID {}", departmentId);
-        } else {
-            LOGGER.debug("No department found with ID {}", departmentId);
-        }
+    public int delete(Integer departmentId) {
+        LOGGER.debug("delete(departmentId:{})", departmentId);
+
+        MapSqlParameterSource mapSqlParameterSource = new MapSqlParameterSource();
+        mapSqlParameterSource.addValue(DEPARTMENT_ID, departmentId);
+        return namedParameterJdbcTemplate.update(delete, mapSqlParameterSource);
 
     }
 
@@ -93,8 +102,8 @@ public class DepartmentJdbcDAOImpl implements DepartmentDAO {
         @Override
         public Department mapRow(ResultSet resultSet, int i) throws SQLException {
             Department department = new Department();
-            department.setDepartmentId(resultSet.getInt("departmentId"));
-            department.setDepartmentName(resultSet.getString("departmentName"));
+            department.setDepartmentId(resultSet.getInt(COLUMN_DEPARTMENT_ID);
+            department.setDepartmentName(resultSet.getString(COLUMN_DEPARTMENT_NAME));
             return department;
         }
     }
