@@ -39,7 +39,7 @@ public class DepartmentJdbcDAOImpl implements DepartmentDAO {
     public DepartmentJdbcDAOImpl(NamedParameterJdbcTemplate namedParameterJdbcTemplate) {
         this.namedParameterJdbcTemplate = namedParameterJdbcTemplate;
     }
-
+    
     @Override
     public List<Department> getDepartments() {
         LOGGER.debug("Get all departments");

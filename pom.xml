@@ -40,6 +40,11 @@
             </dependency>
             <dependency>
                 <groupId>com.epam.brest.courses</groupId>
+                <artifactId>department-management-web-app</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.epam.brest.courses</groupId>
                 <artifactId>department-management-test</artifactId>
                 <version>${project.version}</version>
                 <scope>test</scope>
