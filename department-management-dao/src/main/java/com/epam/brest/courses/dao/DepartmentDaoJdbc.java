@@ -22,9 +22,9 @@ import java.util.Optional;
 import static com.epam.brest.courses.constants.DepartmentConstants.*;
 
 
-public class DepartmentJdbcDAOImpl implements DepartmentDAO {
+public class DepartmentDaoJdbc implements DepartmentDao {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(DepartmentJdbcDAOImpl.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(DepartmentDaoJdbc.class);
 
     @Value("${department.findAll}")
     private String findAll;
@@ -45,7 +45,7 @@ public class DepartmentJdbcDAOImpl implements DepartmentDAO {
 
     private final DepartmentRowMapper departmentRowMapper = new DepartmentRowMapper();
 
-    public DepartmentJdbcDAOImpl(NamedParameterJdbcTemplate namedParameterJdbcTemplate) {
+    public DepartmentDaoJdbc(NamedParameterJdbcTemplate namedParameterJdbcTemplate) {
         this.namedParameterJdbcTemplate = namedParameterJdbcTemplate;
     }
     
@@ -102,7 +102,7 @@ public class DepartmentJdbcDAOImpl implements DepartmentDAO {
         @Override
         public Department mapRow(ResultSet resultSet, int i) throws SQLException {
             Department department = new Department();
-            department.setDepartmentId(resultSet.getInt(COLUMN_DEPARTMENT_ID);
+            department.setDepartmentId(resultSet.getInt(COLUMN_DEPARTMENT_ID));
             department.setDepartmentName(resultSet.getString(COLUMN_DEPARTMENT_NAME));
             return department;
         }

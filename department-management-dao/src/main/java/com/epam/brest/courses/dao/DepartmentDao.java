@@ -5,7 +5,7 @@ import com.epam.brest.courses.model.Department;
 import java.util.List;
 import java.util.Optional;
 
-public interface DepartmentDAO {
+public interface DepartmentDao {
 
     /**
      * Find all departments.

@@ -27,7 +27,7 @@ import static org.mockito.Mockito.*;
 public class DepartmentJdbcDAOImplMockTest {
 
     @InjectMocks
-    private DepartmentJdbcDAOImpl departmentDAO;
+    private DepartmentDaoJdbc departmentDAO;
 
     @Mock
     private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
@@ -47,13 +47,13 @@ public class DepartmentJdbcDAOImplMockTest {
         Department department = new Department();
         ResultSet rs = mock(ResultSet.class);
         String sql = "select";
-        ReflectionTestUtils.setField(departmentDAO, "selectAll", sql);
+        ReflectionTestUtils.setField(departmentDAO, "findAll", sql);
 
         when(namedParameterJdbcTemplate.query(anyString(), any(RowMapper.class))).thenReturn(Collections.singletonList(department));
         when(rs.getInt(anyString())).thenReturn(5);
         when(rs.getString(anyString())).thenReturn("name");
 
-        List<Department> departments = departmentDAO.getDepartments();
+        List<Department> departments = departmentDAO.findAll();
         assertNotNull(departments);
         assertEquals(1, departments.size());
         Department dep = departments.get(0);

@@ -20,7 +20,7 @@ public class DepartmentDtoDaoJdbc implements DepartmentDtoDao {
 
     private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
-    @Value("${departmentDto.findAllWithAvgSalary")
+    @Value("${departmentDto.findAllWithAvgSalary}")
     private String findAllWithAvgSalary;
 
     public DepartmentDtoDaoJdbc(NamedParameterJdbcTemplate namedParameterJdbcTemplate) {
@@ -31,7 +31,8 @@ public class DepartmentDtoDaoJdbc implements DepartmentDtoDao {
     @Override
     public List<DepartmentDto> findAllWithAvgSalary() {
         LOGGER.debug("Find all with avg salary");
-        List<DepartmentDto> departments = namedParameterJdbcTemplate.query(findAllWithAvgSalary, BeanPropertyRowMapper.newInstance(DepartmentDto.class));
+        List<DepartmentDto> departments = namedParameterJdbcTemplate.query(findAllWithAvgSalary,
+                BeanPropertyRowMapper.newInstance(DepartmentDto.class));
         return departments;
     }
 }
