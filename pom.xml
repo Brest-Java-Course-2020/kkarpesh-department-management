@@ -13,6 +13,8 @@
         <module>department-management-model</module>
         <module>department-management-test</module>
         <module>department-management-web-app</module>
+        <module>department-management-service-api</module>
+        <module>department-management-service</module>
     </modules>
 
     <properties>
@@ -35,7 +37,23 @@
             </dependency>
             <dependency>
                 <groupId>com.epam.brest.courses</groupId>
+                <artifactId>department-management-test</artifactId>
+                <version>${project.version}</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>com.epam.brest.courses</groupId>
                 <artifactId>department-management-dao</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.epam.brest.courses</groupId>
+                <artifactId>department-management-service-api</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.epam.brest.courses</groupId>
+                <artifactId>department-management-service</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
@@ -43,12 +61,7 @@
                 <artifactId>department-management-web-app</artifactId>
                 <version>${project.version}</version>
             </dependency>
-            <dependency>
-                <groupId>com.epam.brest.courses</groupId>
-                <artifactId>department-management-test</artifactId>
-                <version>${project.version}</version>
-                <scope>test</scope>
-            </dependency>
+
 
             <dependency>
                 <groupId>org.springframework</groupId>
